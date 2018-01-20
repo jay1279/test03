@@ -1,0 +1,18 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "hengwei"
+    },
+    "adminPassword": {
+      "value": "abc@123456"
+    },
+    "dnsLabelPrefix": {
+      "value": "hwvm"
+    },
+    "CentOSVersion": {
+      "value": "6.5"
+    }
+  }
+}
