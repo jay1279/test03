@@ -1,0 +1,243 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_TestVM_name": {
+            "defaultValue": "TestVM",
+            "type": "String"
+        },
+        "networkInterfaces_testvm289_name": {
+            "defaultValue": "testvm289",
+            "type": "String"
+        },
+        "publicIPAddresses_TestVM_ip_name": {
+            "defaultValue": "TestVM-ip",
+            "type": "String"
+        },
+        "virtualNetworks_TestTraining_name": {
+            "defaultValue": "TestTraining",
+            "type": "String"
+        },
+        "networkSecurityGroups_TestVM_nsg_name": {
+            "defaultValue": "TestVM-nsg",
+            "type": "String"
+        },
+        "storageAccounts_storegeaccountnew_name": {
+            "defaultValue": "storegeaccountnew",
+            "type": "String"
+        },
+        "disks_TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729_name": {
+            "defaultValue": "TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Compute/disks/TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729”。",
+            "type": "Microsoft.Compute/disks",
+            "name": "[parameters('disks_TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "accountType": "Standard_LRS",
+                "osType": "Windows",
+                "creationData": {
+                    "createOption": "FromImage",
+                    "imageReference": {
+                        "id": "/Subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/Providers/Microsoft.Compute/Locations/chinanorth/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-R2-Datacenter/Versions/4.127.20171216"
+                    }
+                },
+                "diskSizeGB": 128
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Compute/virtualMachines/TestVM”。",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_TestVM_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_TestVM_name'),'_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS",
+                            "id": "[resourceId('Microsoft.Compute/disks', parameters('disks_TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729_name'))]"
+                        },
+                        "diskSizeGB": 128
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_TestVM_name')]",
+                    "adminUsername": "CMBWeb",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_testvm289_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "https://szsyxnsdiag518.blob.core.chinacloudapi.cn/"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/disks', parameters('disks_TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_testvm289_name'))]"
+            ]
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Network/networkInterfaces/testvm289”。",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_testvm289_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "10.0.1.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_TestVM_ip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_TestTraining_name')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_TestVM_nsg_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_TestVM_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_TestTraining_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_TestVM_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Network/networkSecurityGroups/TestVM-nsg”。",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_TestVM_nsg_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Network/publicIPAddresses/TestVM-ip”。",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_TestVM_ip_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/TestTraining/providers/Microsoft.Network/virtualNetworks/TestTraining”。",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_TestTraining_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "chinanorth",
+            "scale": null,
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.1.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.0.1.0/24"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "已从资源实现通用:“/subscriptions/f1c6ef5b-fe34-4499-be25-c61dcc3fdf3e/resourceGroups/testtraining/providers/Microsoft.Storage/storageAccounts/storegeaccountnew”。",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_storegeaccountnew_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "chinanorth",
+            "tags": {
+                "Environment": "Finace"
+            },
+            "scale": null,
+            "properties": {
+                "encryption": {
+                    "keySource": "Microsoft.Storage",
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        }
+                    }
+                }
+            },
+            "dependsOn": []
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_TestVM_name": {
+            "value": "test01"        },
+        "networkInterfaces_testvm289_name": {
+            "value": "test289"
+        },
+        "publicIPAddresses_TestVM_ip_name": {
+            "value": "testip"
+        },
+        "virtualNetworks_TestTraining_name": {
+            "value": "testVN"
+        },
+        "networkSecurityGroups_TestVM_nsg_name": {
+            "value": "testnsg"
+        },
+        "storageAccounts_storegeaccountnew_name": {
+            "value": "testaccount"
+        },
+        "disks_TestVM_OsDisk_1_a37b5c1f14ee4d978fd840d6ef9ad729_name": {
+            "value": "testdisk"
+        }
+    }
+}
